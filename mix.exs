@@ -1,9 +1,9 @@
-defmodule APISexFilterIPWhitelist.MixProject do
+defmodule APISexFilterIPBlacklist.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :apisex_filter_ip_whitelist,
+      app: :apisex_filter_ip_blacklist,
       version: "0.1.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,

@@ -1,10 +1,10 @@
 # APISexFilterIPWhitelist
 
-An `APISex.Filter` plug enabling IP whitelist (IPv4 & IPv6)
+An `APISex.Filter` plug enabling IP blacklist (IPv4 & IPv6)
 
 ## Plug options
 
-- `whitelist`: a *list* of allowed IPv4 and IPv6 addresses in CIDR notation or a
+- `blacklist`: a *list* of banned IPv4 and IPv6 addresses in CIDR notation or a
 `(Plug.Conn.t -> [String])` function returning that list of addresses
 - `set_filter_error_response`: if `true`, sets the HTTP status code to `403`.
 If false, does not do anything. Defaults to `true`
@@ -15,7 +15,7 @@ later in the code. Defaults to `true`
 ## Example
 
 ```elixir
-Plug APISexFilterIPWhitelist, whitelist: [
+Plug APISexFilterIPBlacklist, blacklist: [
   "192.168.13.0/24",
   "2001:45B8:991A::/48",
   "23.12.0.0/16",

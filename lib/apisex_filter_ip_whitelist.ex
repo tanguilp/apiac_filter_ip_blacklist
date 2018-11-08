@@ -1,13 +1,13 @@
-defmodule APISexFilterIPWhitelist do
+defmodule APISexFilterIPBlacklist do
   @behaviour Plug
   @behaviour APISex.Filter
 
   @moduledoc """
-  An `APISex.Filter` plug enabling IP whitelist (IPv4 & IPv6)
+  An `APISex.Filter` plug enabling IP blacklist (IPv4 & IPv6)
 
   ## Plug options
 
-  - `whitelist`: a *list* of allowed IPv4 and IPv6 addresses in CIDR notation or a
+  - `blacklist`: a *list* of banned IPv4 and IPv6 addresses in CIDR notation or a
   `(Plug.Conn.t -> [String])` function returning that list of addresses
   - `set_filter_error_response`: if `true`, sets the HTTP status code to `403`.
   If false, does not do anything. Defaults to `true`
@@ -18,7 +18,7 @@ defmodule APISexFilterIPWhitelist do
   ## Example
 
   ```elixir
-  Plug APISexFilterIPWhitelist, whitelist: [
+  Plug APISexFilterIPBlacklist, blacklist: [
     "192.168.13.0/24",
     "2001:45B8:991A::/48",
     "23.12.0.0/16",
@@ -40,16 +40,16 @@ defmodule APISexFilterIPWhitelist do
   def init(opts) do
     opts
     |> Enum.into(%{})
-    |> Map.put(:whitelist, transform_whitelist(opts[:whitelist]))
+    |> Map.put(:blacklist, transform_blacklist(opts[:blacklist]))
     |> Map.put_new(:set_filter_error_response, true)
     |> Map.put_new(:halt_on_filter_failure, true)
   end
 
-  defp transform_whitelist(whitelist) when is_list(whitelist) do
-    Enum.map(whitelist, fn cidr -> InetCidr.parse(cidr) end)
+  defp transform_blacklist(blacklist) when is_list(blacklist) do
+    Enum.map(blacklist, fn cidr -> InetCidr.parse(cidr) end)
   end
-  defp transform_whitelist(whitelist) when is_function(whitelist, 1), do: whitelist
-  defp transform_whitelist(_), do: raise "Whitelist must be a list or a function"
+  defp transform_blacklist(blacklist) when is_function(blacklist, 1), do: blacklist
+  defp transform_blacklist(_), do: raise "blacklist must be a list or a function"
 
   @impl Plug
   def call(conn, opts) do
@@ -76,22 +76,22 @@ defmodule APISexFilterIPWhitelist do
   end
 
   @impl APISex.Filter
-  def filter(conn, %{whitelist: whitelist}) do
+  def filter(conn, %{blacklist: blacklist}) do
 
-    if do_filter(conn, whitelist) do
+    if do_filter(conn, blacklist) do
       {:ok, conn}
     else
-      {:error, conn, %APISex.Filter.Forbidden{filter: __MODULE__, reason: :ip_not_whitelisted}}
+      {:error, conn, %APISex.Filter.Forbidden{filter: __MODULE__, reason: :ip_not_blacklisted}}
     end
   end
 
-  defp do_filter(conn, whitelist) when is_function(whitelist, 1) do
-    do_filter(conn, whitelist.(conn))
+  defp do_filter(conn, blacklist) when is_function(blacklist, 1) do
+    do_filter(conn, blacklist.(conn))
   end
 
-  defp do_filter(%Plug.Conn{remote_ip: remote_ip}, whitelist) do
-    Enum.any?(
-      whitelist,
+  defp do_filter(%Plug.Conn{remote_ip: remote_ip}, blacklist) do
+    not Enum.any?(
+      blacklist,
       fn cidr -> InetCidr.contains?(cidr(cidr), remote_ip) end
     )
   end
