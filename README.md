@@ -1,4 +1,4 @@
-# APISexFilterIPWhitelist
+# APISexFilterIPBlacklist
 
 An `APISex.Filter` plug enabling IP blacklist (IPv4 & IPv6)
 
@@ -6,11 +6,12 @@ An `APISex.Filter` plug enabling IP blacklist (IPv4 & IPv6)
 
 - `blacklist`: a *list* of banned IPv4 and IPv6 addresses in CIDR notation or a
 `(Plug.Conn.t -> [String])` function returning that list of addresses
-- `set_filter_error_response`: if `true`, sets the HTTP status code to `403`.
-If false, does not do anything. Defaults to `true`
-- `halt_on_filter_failure`: if set to `true`, halts the connection and directly sends the
-response. When set to `false`, does nothing and therefore allows dealing with the error
-later in the code. Defaults to `true`
+- `exec_cond`: a `(Plug.Conn.t() -> boolean())` function that determines whether
+this filter is to be executed or not. Defaults to `fn _ -> true end`
+- `send_error_response`: function called when request is throttled. Defaults to
+`APISexFilterIPBlacklist.send_error_response/3`
+- `error_response_verbosity`: one of `:debug`, `:normal` or `:minimal`.
+Defaults to `:normal`
 
 ## Example
 
