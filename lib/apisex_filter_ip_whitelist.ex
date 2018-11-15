@@ -11,7 +11,7 @@ defmodule APISexFilterIPBlacklist do
   `(Plug.Conn.t -> [String])` function returning that list of addresses
   - `exec_cond`: a `(Plug.Conn.t() -> boolean())` function that determines whether
   this filter is to be executed or not. Defaults to `fn _ -> true end`
-  - `send_error_response`: function called when request is throttled. Defaults to
+  - `send_error_response`: function called when IP address is blacklisted. Defaults to
   `APISexFilterIPBlacklist.send_error_response/3`
   - `error_response_verbosity`: one of `:debug`, `:normal` or `:minimal`.
   Defaults to `:normal`
@@ -50,8 +50,9 @@ defmodule APISexFilterIPBlacklist do
   defp transform_blacklist(blacklist) when is_list(blacklist) do
     Enum.map(blacklist, fn cidr -> InetCidr.parse(cidr) end)
   end
+
   defp transform_blacklist(blacklist) when is_function(blacklist, 1), do: blacklist
-  defp transform_blacklist(_), do: raise "blacklist must be a list or a function"
+  defp transform_blacklist(_), do: raise("blacklist must be a list or a function")
 
   @impl Plug
   def call(conn, opts) do
@@ -70,7 +71,6 @@ defmodule APISexFilterIPBlacklist do
 
   @impl APISex.Filter
   def filter(conn, %{blacklist: blacklist}) do
-
     if do_filter(conn, blacklist) do
       {:ok, conn}
     else

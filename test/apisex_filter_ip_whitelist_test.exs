@@ -71,6 +71,7 @@ defmodule APISexFilterIPBlacklistTest do
       "20E7:4128:D4F0:0::/64",
       "91.23.251.0/24"
     ]
+
     opts = APISexFilterIPBlacklist.init(blacklist: blacklist)
 
     conn =
@@ -90,6 +91,7 @@ defmodule APISexFilterIPBlacklistTest do
       "20E7:4128:D4F0:0::/64",
       "91.23.251.0/24"
     ]
+
     opts = APISexFilterIPBlacklist.init(blacklist: blacklist)
 
     conn =

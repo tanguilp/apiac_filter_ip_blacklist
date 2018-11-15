@@ -8,7 +8,7 @@ An `APISex.Filter` plug enabling IP blacklist (IPv4 & IPv6)
 `(Plug.Conn.t -> [String])` function returning that list of addresses
 - `exec_cond`: a `(Plug.Conn.t() -> boolean())` function that determines whether
 this filter is to be executed or not. Defaults to `fn _ -> true end`
-- `send_error_response`: function called when request is throttled. Defaults to
+- `send_error_response`: function called when IP address is blacklisted. Defaults to
 `APISexFilterIPBlacklist.send_error_response/3`
 - `error_response_verbosity`: one of `:debug`, `:normal` or `:minimal`.
 Defaults to `:normal`
