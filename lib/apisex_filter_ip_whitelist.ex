@@ -19,7 +19,7 @@ defmodule APISexFilterIPBlacklist do
   ## Example
 
   ```elixir
-  Plug APISexFilterIPBlacklist, blacklist: [
+  plug APISexFilterIPBlacklist, blacklist: [
     "192.168.13.0/24",
     "2001:45B8:991A::/48",
     "23.12.0.0/16",
