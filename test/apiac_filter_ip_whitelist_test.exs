@@ -1,63 +1,63 @@
-defmodule APISexFilterIPBlacklistTest do
+defmodule APIacFilterIPBlacklistTest do
   use ExUnit.Case
   use Plug.Test
-  doctest APISexFilterIPBlacklist
+  doctest APIacFilterIPBlacklist
 
   test "blacklisted IPv4 address" do
-    opts = APISexFilterIPBlacklist.init(blacklist: ["221.92.0.0/16"])
+    opts = APIacFilterIPBlacklist.init(blacklist: ["221.92.0.0/16"])
 
     conn =
       conn(:get, "/")
       |> put_ip_address("221.92.173.24")
-      |> APISexFilterIPBlacklist.call(opts)
+      |> APIacFilterIPBlacklist.call(opts)
 
     assert conn.status == 403
     assert conn.halted
   end
 
   test "blacklisted IPv4 address, subnet == unique IP address" do
-    opts = APISexFilterIPBlacklist.init(blacklist: ["13.4.178.2/32"])
+    opts = APIacFilterIPBlacklist.init(blacklist: ["13.4.178.2/32"])
 
     conn =
       conn(:get, "/")
       |> put_ip_address("13.4.178.2")
-      |> APISexFilterIPBlacklist.call(opts)
+      |> APIacFilterIPBlacklist.call(opts)
 
     assert conn.status == 403
     assert conn.halted
   end
 
   test "not blacklisted IPv4 address" do
-    opts = APISexFilterIPBlacklist.init(blacklist: ["221.92.0.0/16"])
+    opts = APIacFilterIPBlacklist.init(blacklist: ["221.92.0.0/16"])
 
     conn =
       conn(:get, "/")
       |> put_ip_address("17.195.73.12")
-      |> APISexFilterIPBlacklist.call(opts)
+      |> APIacFilterIPBlacklist.call(opts)
 
     refute conn.status == 403
     refute conn.halted
   end
 
   test "blacklisted IPv6 address" do
-    opts = APISexFilterIPBlacklist.init(blacklist: ["2001:F4E5:C0CA:4000::/50"])
+    opts = APIacFilterIPBlacklist.init(blacklist: ["2001:F4E5:C0CA:4000::/50"])
 
     conn =
       conn(:get, "/")
       |> put_ip_address("2001:F4E5:C0CA:4049:D7:912E:FF00:0BD7")
-      |> APISexFilterIPBlacklist.call(opts)
+      |> APIacFilterIPBlacklist.call(opts)
 
     assert conn.status == 403
     assert conn.halted
   end
 
   test "not blacklisted IPv6 address" do
-    opts = APISexFilterIPBlacklist.init(blacklist: ["2001:F4E5:C0CA:4000::/50"])
+    opts = APIacFilterIPBlacklist.init(blacklist: ["2001:F4E5:C0CA:4000::/50"])
 
     conn =
       conn(:get, "/")
       |> put_ip_address("2001:F4E5:C0CA:E049:D7:912E:FF00:0BD7")
-      |> APISexFilterIPBlacklist.call(opts)
+      |> APIacFilterIPBlacklist.call(opts)
 
     refute conn.status == 403
     refute conn.halted
@@ -72,12 +72,12 @@ defmodule APISexFilterIPBlacklistTest do
       "91.23.251.0/24"
     ]
 
-    opts = APISexFilterIPBlacklist.init(blacklist: blacklist)
+    opts = APIacFilterIPBlacklist.init(blacklist: blacklist)
 
     conn =
       conn(:get, "/")
       |> put_ip_address("20E7:4128:D4F0:0::42")
-      |> APISexFilterIPBlacklist.call(opts)
+      |> APIacFilterIPBlacklist.call(opts)
 
     assert conn.status == 403
     assert conn.halted
@@ -92,24 +92,24 @@ defmodule APISexFilterIPBlacklistTest do
       "91.23.251.0/24"
     ]
 
-    opts = APISexFilterIPBlacklist.init(blacklist: blacklist)
+    opts = APIacFilterIPBlacklist.init(blacklist: blacklist)
 
     conn =
       conn(:get, "/")
       |> put_ip_address("8.8.7.8")
-      |> APISexFilterIPBlacklist.call(opts)
+      |> APIacFilterIPBlacklist.call(opts)
 
     refute conn.status == 403
     refute conn.halted
   end
 
   test "blacklisted IPv4 address with fun callback" do
-    opts = APISexFilterIPBlacklist.init(blacklist: &my_cidr_list/1)
+    opts = APIacFilterIPBlacklist.init(blacklist: &my_cidr_list/1)
 
     conn =
       conn(:get, "/")
       |> put_ip_address("23.91.178.41")
-      |> APISexFilterIPBlacklist.call(opts)
+      |> APIacFilterIPBlacklist.call(opts)
 
     assert conn.status == 403
     assert conn.halted

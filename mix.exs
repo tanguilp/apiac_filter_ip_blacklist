@@ -1,9 +1,9 @@
-defmodule APISexFilterIPBlacklist.MixProject do
+defmodule APIacFilterIPBlacklist.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :apisex_filter_ip_blacklist,
+      app: :apiac_filter_ip_blacklist,
       version: "0.1.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
@@ -24,7 +24,7 @@ defmodule APISexFilterIPBlacklist.MixProject do
   defp deps do
     [
       {:plug, "~> 1.0"},
-      {:apisex, github: "tanguilp/apisex", tag: "0.1.0"},
+      {:apiac, github: "tanguilp/apiac", tag: "0.2.0"},
       {:inet_cidr, "~> 1.0.0"},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}

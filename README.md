@@ -1,6 +1,16 @@
-# APISexFilterIPBlacklist
+# APIacFilterIPBlacklist
 
-An `APISex.Filter` plug enabling IP blacklist (IPv4 & IPv6)
+An `APIac.Filter` plug enabling IP blacklist (IPv4 & IPv6)
+
+## Installation
+
+```elixir
+def deps do
+  [
+    {:apiac_filter_ip_blacklist, github: "tanguilp/apiac_filter_ip_blacklist", tag: "0.2.0"}
+  ]
+end
+```
 
 ## Plug options
 
@@ -9,14 +19,14 @@ An `APISex.Filter` plug enabling IP blacklist (IPv4 & IPv6)
 - `exec_cond`: a `(Plug.Conn.t() -> boolean())` function that determines whether
 this filter is to be executed or not. Defaults to `fn _ -> true end`
 - `send_error_response`: function called when IP address is blacklisted. Defaults to
-`APISexFilterIPBlacklist.send_error_response/3`
+`APIacFilterIPBlacklist.send_error_response/3`
 - `error_response_verbosity`: one of `:debug`, `:normal` or `:minimal`.
 Defaults to `:normal`
 
 ## Example
 
 ```elixir
-plug APISexFilterIPBlacklist, blacklist: [
+plug APIacFilterIPBlacklist, blacklist: [
   "192.168.13.0/24",
   "2001:45B8:991A::/48",
   "23.12.0.0/16",

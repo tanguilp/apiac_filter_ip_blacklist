@@ -1,9 +1,9 @@
-defmodule APISexFilterIPBlacklist do
+defmodule APIacFilterIPBlacklist do
   @behaviour Plug
-  @behaviour APISex.Filter
+  @behaviour APIac.Filter
 
   @moduledoc """
-  An `APISex.Filter` plug enabling IP blacklist (IPv4 & IPv6)
+  An `APIac.Filter` plug enabling IP blacklist (IPv4 & IPv6)
 
   ## Plug options
 
@@ -12,14 +12,14 @@ defmodule APISexFilterIPBlacklist do
   - `exec_cond`: a `(Plug.Conn.t() -> boolean())` function that determines whether
   this filter is to be executed or not. Defaults to `fn _ -> true end`
   - `send_error_response`: function called when IP address is blacklisted. Defaults to
-  `APISexFilterIPBlacklist.send_error_response/3`
+  `APIacFilterIPBlacklist.send_error_response/3`
   - `error_response_verbosity`: one of `:debug`, `:normal` or `:minimal`.
   Defaults to `:normal`
 
   ## Example
 
   ```elixir
-  plug APISexFilterIPBlacklist, blacklist: [
+  plug APIacFilterIPBlacklist, blacklist: [
     "192.168.13.0/24",
     "2001:45B8:991A::/48",
     "23.12.0.0/16",
@@ -69,12 +69,12 @@ defmodule APISexFilterIPBlacklist do
     end
   end
 
-  @impl APISex.Filter
+  @impl APIac.Filter
   def filter(conn, %{blacklist: blacklist}) do
     if do_filter(conn, blacklist) do
       {:ok, conn}
     else
-      {:error, conn, %APISex.Filter.Forbidden{filter: __MODULE__, reason: :ip_not_blacklisted}}
+      {:error, conn, %APIac.Filter.Forbidden{filter: __MODULE__, reason: :ip_not_blacklisted}}
     end
   end
 
@@ -93,7 +93,7 @@ defmodule APISexFilterIPBlacklist do
   defp cidr(cidr) when is_tuple(cidr), do: cidr
 
   @doc """
-  Implementation of the `APISex.Filter` behaviour.
+  Implementation of the `APIac.Filter` behaviour.
 
   ## Verbosity
 
@@ -102,13 +102,13 @@ defmodule APISexFilterIPBlacklist do
 
   | Error reponse verbosity | HTTP status             | Headers     | Body                                          |
   |:-----------------------:|-------------------------|-------------|-----------------------------------------------|
-  | :debug                  | Forbidden (403)         |             | `APISex.Filter.Forbidden` exception's message |
+  | :debug                  | Forbidden (403)         |             | `APIac.Filter.Forbidden` exception's message |
   | :normal                 | Forbidden (403)         |             |                                               |
   | :minimal                | Forbidden (403)         |             |                                               |
 
   """
-  @impl APISex.Filter
-  def send_error_response(conn, %APISex.Filter.Forbidden{} = error, opts) do
+  @impl APIac.Filter
+  def send_error_response(conn, %APIac.Filter.Forbidden{} = error, opts) do
     case opts[:error_response_verbosity] do
       :debug ->
         conn
